@@ -1,0 +1,64 @@
+MODEL:
+  BACKBONE:
+    CONV_BODY: "RESNET-18"
+    USE_NORMALIZATION: "BN"
+    DOWN_RATIO: 4
+    BACKBONE_OUT_CHANNELS: 64
+  SMOKE_HEAD:
+    DIMENSION_REFERENCE: ((4.392, 1.658, 1.910),
+      (1.773, 1.525, 0.740),
+      (0.505, 1.644, 0.582),
+      (7.085, 2.652, 2.523),
+      (2.790, 1.651, 1.201),
+      (8.208, 2.869, 2.645))
+    REGRESSION_HEADS: 9
+    # Specific channel for (depth_offset, keypoint_offset, dimension_offset, orientation)
+    REGRESSION_CHANNEL: (2, 2, 3, 2)
+    REGRESSION_MULTI_HEADS: False
+    LOSS_WEIGHT: (1., 2.)
+
+    NORMALIZED_FOCAL_REFERENCE: 720.0
+    LOSS_TYPE: ("GeneralizedFocalLoss", "DisL1")
+    GENERALIZED_FL_BELTA: 2
+    CLS_REWEIGHT_SHOT_GAMMA: 0.5
+    CLS_REWEIGHT_SIZE_GAMMA: 0.0
+INPUT:
+  HEATMAP_METHORD: "round"
+  RADIUS_IOU: 0.5
+  SHIFT_SCALE_PROB_TRAIN: 1.0
+  SHIFT_SCALE_TRAIN: (0.2, 0.2)
+  FLIP_PROB_TRAIN: 0.5
+
+  HEIGHT_TRAIN: 480
+  WIDTH_TRAIN: 640
+  HEIGHT_TEST: 480
+  WIDTH_TEST: 640
+DATASETS:
+  DETECT_CLASSES: ["Car", "Cyclist", "Pedestrian", "Truck", "Tricycle", "Bus"]
+  TRAIN: ["jdx_fusion"]
+  TEST: ["jdx_simu_217", "jdx_simu"]
+  JDX_GAMMA_CORRECTION: False
+DATALOADER:
+  NUM_WORKERS: 4
+SOLVER:
+  OPTIMIZER: "Adam"
+  SCHEDULER: "WarmupMultiStepLR"
+  BASE_LR: 8e-4
+  STEPS: [40000, 80000, 120000, 160000]
+  DESCENT_RATE: 0.5
+  MAX_ITERATION: 200000
+  WARMUP_ITERS: 20000
+  WARMUP_FACTOR: 0.25
+  IMS_PER_BATCH: 64
+  EVALUATE_STEP_PERIOD: 2000
+
+  PRETRAIN_MODEL: ""
+  EXCLUDE_LAYERS: []
+  RESUME: False
+
+TEST:
+  DETECTIONS_THRESHOLD: 0.25
+  DEPTH_RANGES: [[0,30],[0,15],[15,30]]
+  IOU_THRESHOLDS: [0.7, 0.25, 0.25, 0.7, 0.25, 0.7]
+
+OUTPUT_DIR: "./checkpoint/jdx_resnet18_640x480_crop_resize"

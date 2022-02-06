@@ -1,0 +1,61 @@
+MODEL:
+  BACKBONE:
+    CONV_BODY: "RESNET-18"
+    USE_NORMALIZATION: "BN"
+    DOWN_RATIO: 4
+    BACKBONE_OUT_CHANNELS: 64
+  HEAD:
+    TYPE: "SMOKEHead"
+    NORMALIZED_FOCAL_REFERENCE: 720.0
+    LOSS_TYPE: ("GeneralizedFocalLoss", "DisL1")
+    CLS_REWEIGHT_SHOT_GAMMA: 0.5
+    CLS_REWEIGHT_SIZE_GAMMA: 0.5
+    DIMENSION_REFERENCE: ((4.392, 1.658, 1.910),
+                          (1.773, 1.525, 0.740),
+                          (0.505, 1.644, 0.582),
+                          (7.085, 2.652, 2.523),
+                          (2.790, 1.651, 1.201),
+                          (8.208, 2.869, 2.645))
+INPUT:
+  HEIGHT_TRAIN: 480
+  WIDTH_TRAIN: 640
+  HEIGHT_TEST: 480
+  WIDTH_TEST: 640
+  DEBUG_VISUAL: False
+  HEATMAP_METHORD: "round"
+  RADIUS_IOU: 0.5
+AUGMENTATION:
+  HSV_PROB: 0.5
+  HSV_SCALE: [0.15, 0.7, 0.4]
+  FLIP_PROB: 0.5
+  AFFINE_TRANSFORM_PROB: 0.5
+  AFFINE_TRANSFORM_SHIFT_SCALE: (0.2, 0.2)
+DATASETS:
+  DETECT_CLASSES: ["Car", "Cyclist", "Pedestrian", "Truck", "Tricycle", "Bus"]
+  DEPTH_RANGE: [0, 30]
+  TRUNCATION: [0, 1, 2, 3, 4, 5]
+  OCCLUSION: [0, 1, 2, 3, 4, 5]
+  TRAIN: ["jdx_fusion_front", "jdx_fusion_rear"]
+  TEST: ["jdx_simu_front"]
+DATALOADER:
+  NUM_WORKERS: 4
+  SAMPLER:
+    TYPE: "TrainingSampler"
+SOLVER:
+  OPTIMIZER: "Adam"
+  SCHEDULER: "MultiStepLR"
+  BASE_LR: 1e-4
+  STEPS: [50000, 80000]
+  DESCENT_RATE: 0.1
+  MAX_ITERATION: 100000
+  IMS_PER_BATCH: 16
+  EVALUATE_STEP_PERIOD: 100
+  PRETRAIN_MODEL: ""
+  EXCLUDE_LAYERS: []
+  RESUME: False
+TEST:
+  DETECTIONS_THRESHOLD: 0.25
+  DEPTH_RANGES: [[0,30]]
+  IOU_THRESHOLDS: [0.7, 0.25, 0.25, 0.7, 0.25, 0.7]
+
+OUTPUT_DIR: "./checkpoint/jdx_resnet18_640x480"

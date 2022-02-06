@@ -1,0 +1,15 @@
+/build/
+/smoke.egg-info/
+/dist/
+/pretrained/
+/checkpoints/
+/checkpoint/
+/tools/logs/
+/datasets/
+/demo/
+.idea
+.ipynb_checkpoints/
+__pycache__/
+*.pyc
+*.so
+*.cu.o

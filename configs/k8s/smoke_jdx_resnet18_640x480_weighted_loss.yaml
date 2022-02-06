@@ -1,0 +1,47 @@
+MODEL:
+  BACKBONE:
+    CONV_BODY: "RESNET-18"
+    USE_NORMALIZATION: "BN"
+    DOWN_RATIO: 4
+    BACKBONE_OUT_CHANNELS: 64
+  SMOKE_HEAD:
+    NORMALIZED_FOCAL_REFERENCE: -1.0
+    LOSS_TYPE: ("FocalLoss", "WeightedDisL1")
+INPUT:
+  HEIGHT_TRAIN: 480
+  WIDTH_TRAIN: 640
+  HEIGHT_TEST: 480
+  WIDTH_TEST: 640
+  DEBUG_VISUAL: False
+  HEATMAP_METHORD: "round"
+  RADIUS_IOU: 0.5
+AUGMENTATION:
+  HSV_PROB: 0.5
+  FLIP_PROB: 0.5
+  AFFINE_TRANSFORM_PROB: 0.5
+  AFFINE_TRANSFORM_SHIFT_SCALE: (0.2, 0.2)
+DATASETS:
+  DETECT_CLASSES: ["Car", "Cyclist", "Pedestrian", "Truck", "Tricycle", "Bus"]
+  TRAIN: ["jdx_fusion_front", "jdx2020_tracker", "jdx2021_tracker", "jdx2021_fusion"]
+  TEST: ["jdx_simu_front", "jdx_test_front"]
+DATALOADER:
+  NUM_WORKERS: 4
+  SAMPLER:
+    TYPE: "TrainingSampler"
+SOLVER:
+  OPTIMIZER: "Adam"
+  SCHEDULER: "MultiStepLR"
+  BASE_LR: 1e-5
+  STEPS: [50000, 80000]
+  DESCENT_RATE: 0.1
+  MAX_ITERATION: 100000
+  IMS_PER_BATCH: 64
+  EVALUATE_STEP_PERIOD: 2000
+  PRETRAIN_MODEL: ""
+  RESUME: False
+TEST:
+  DETECTIONS_THRESHOLD: 0.25
+  DEPTH_RANGES: [[0,30],[30,60],[0,15],[15,30],[0,60]]
+  IOU_THRESHOLDS: [0.7, 0.25, 0.25, 0.7, 0.25, 0.7]
+
+OUTPUT_DIR: "./checkpoint/jdx_resnet18_640x480_weighted_loss"
