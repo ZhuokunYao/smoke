@@ -9,10 +9,11 @@ import torch
 import torch.distributed as dist
 from tensorboardX import SummaryWriter
 
-from tools.evaluate import evaluate
+
 from smoke.utils.metric_logger import MetricLogger
 from smoke.utils.comm import get_world_size
 from smoke.utils.miscellaneous import mkdir
+from tool.evaluate import evaluate
 #from smoke.utils import comm
 
 

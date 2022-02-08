@@ -5,6 +5,7 @@ from torch import nn
 from ... import registry
 from . import dla
 from . import resnet,  resnetX
+from . import dd3d
 
 @registry.BACKBONES.register("DLA-34-DCN")
 def build_dla_backbone(cfg):
@@ -26,6 +27,14 @@ def build_resnetx_backbone(cfg):
     body = resnetX.get_resnet(cfg)
     model = nn.Sequential(OrderedDict([("body", body)]))
     model.out_channels = cfg.MODEL.BACKBONE.BACKBONE_OUT_CHANNELS
+    return model
+
+@registry.BACKBONES.register("DD3D")
+def build_dd3d_backbone(cfg):
+    print('\n\n\n\n\n\nusing DD3D DLA backbone!!!\n\n\n\n\n')
+    body = dd3d.get_dd3d(cfg)
+    model = nn.Sequential(OrderedDict([("body", body)]))
+    model.out_channels = cfg.FE.FPN.OUT_CHANNELS
     return model
 
 

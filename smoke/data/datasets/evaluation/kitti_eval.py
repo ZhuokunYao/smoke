@@ -1,7 +1,7 @@
 import os
 import logging
-from tools.pykitti_eval import kitti_common as kitti
-from tools.pykitti_eval.eval import evaluate_mAP
+from tool.pykitti_eval import kitti_common as kitti
+from tool.pykitti_eval.eval import evaluate_mAP
 
 
 def kitti_evaluation(cfg, eval_type, dataset_name):

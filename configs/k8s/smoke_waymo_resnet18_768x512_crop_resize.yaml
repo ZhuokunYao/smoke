@@ -1,9 +1,10 @@
 MODEL:
   BACKBONE:
-    CONV_BODY: "RESNET-18"
+    #CONV_BODY: "RESNET-18"
+    CONV_BODY: "DD3D"
     USE_NORMALIZATION: "BN"
-    DOWN_RATIO: 4
-    BACKBONE_OUT_CHANNELS: 64
+    DOWN_RATIO: 8
+    BACKBONE_OUT_CHANNELS: 256
   SMOKE_HEAD:
     DIMENSION_REFERENCE: ((4.392, 1.658, 1.910),
                           (1.773, 1.525, 0.740),
@@ -22,6 +23,23 @@ MODEL:
     GENERALIZED_FL_BELTA: 2
     CLS_REWEIGHT_SHOT_GAMMA: 0.5
     CLS_REWEIGHT_SIZE_GAMMA: 0.0
+
+FE:
+  FPN:
+    IN_FEATURES: [level3,level4,level5]
+    # By default ('None'), returns all features.
+    OUT_FEATURES: 
+    OUT_CHANNELS: 256
+    NORM: FrozenBN
+    # Types for fusing the FPN top-down and lateral features. Can be either "sum" or "avg"
+    FUSE_TYPE: sum
+  BUILDER: build_fcos_dla_fpn_backbone_p67
+  BACKBONE:
+    NAME: DLA-34
+    OUT_FEATURES: [level3,level4,level5]
+    NORM: FrozenBN
+  OUT_FEATURES: 
+
 INPUT:
   HEATMAP_METHORD: "round"
   RADIUS_IOU: 0.5

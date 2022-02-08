@@ -335,3 +335,16 @@ _C.ENABLE_TENSORRT = False
 
 _C.PATHS_CATALOG = os.path.join(os.path.dirname(__file__), "paths_catalog.py")
 
+_C.FE = CN()
+_C.FE.FPN = CN()
+_C.FE.BACKBONE = CN()
+_C.FE.FPN.IN_FEATURES = ['level3']
+_C.FE.FPN.OUT_FEATURES = None
+_C.FE.FPN.OUT_CHANNELS = 256
+_C.FE.FPN.NORM = 'FrozenBN'
+_C.FE.FPN.FUSE_TYPE = 'sum'
+_C.FE.BUILDER = 'build_fcos_dla_fpn_backbone_p67'
+_C.FE.BACKBONE.NAME = 'DLA-34'
+_C.FE.BACKBONE.OUT_FEATURES = ['level3']
+_C.FE.BACKBONE.NORM = "FrozenBN"
+_C.FE.OUT_FEATURES = None
