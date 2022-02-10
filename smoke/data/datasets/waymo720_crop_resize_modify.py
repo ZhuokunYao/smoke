@@ -152,6 +152,11 @@ class WAYMO720Dataset(Dataset):
         original_idx = self.label_files[idx].replace(".txt", "")
         img_path = os.path.join(self.image_dir, self.image_files[idx])
         img = Image.open(img_path)
+        #img = np.array(img)[:,:,::-1]
+        #img = Image.fromarray(img)
+        
+        #print(np.max(np.array(img)))
+
         anns, K_src = self.anno_dicts[idx], self.K_dicts[idx]
         K = K_src.copy()
         flipped = False
@@ -443,8 +448,9 @@ class WAYMO720Dataset(Dataset):
             target.add_field("conner_2d", target_conner_2d)
 
             if self.transforms is not None:
+                # BGR 255 image
                 img, target = self.transforms(img, target)
-
+            # print(np.max(np.array(img)))
             return img, target, original_idx
         else:
             # for inference we parametrize with original size

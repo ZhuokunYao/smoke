@@ -36,8 +36,13 @@ _C.INPUT.HEIGHT_TEST = 384
 """
 _C.INPUT.WIDTH_TEST = 1280
 # Values to be used for image normalization
-_C.INPUT.PIXEL_MEAN = [0.485, 0.456, 0.406]
-_C.INPUT.PIXEL_STD = [0.229, 0.224, 0.225]
+#_C.INPUT.PIXEL_MEAN = [0.485, 0.456, 0.406]
+#_C.INPUT.PIXEL_STD = [0.229, 0.224, 0.225]
+
+# BGR version:
+_C.INPUT.PIXEL_MEAN = [0.406, 0.456, 0.485]
+_C.INPUT.PIXEL_STD = [0.225, 0.224, 0.229]
+
 _C.INPUT.HEATMAP_METHORD = "round"           ### "round" or "oval"
 """
 0.5

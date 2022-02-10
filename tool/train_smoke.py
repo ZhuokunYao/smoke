@@ -14,6 +14,8 @@ from smoke.solver import make_optimizer, make_lr_scheduler
 from smoke.engine.trainer import do_train
 from smoke.modeling.detector import build_detection_model
 
+from fvcore.common.checkpoint import Checkpointer as fv_Checkpointer
+
 def default_argument_parser():
     parser = argparse.ArgumentParser(description="Monocular 3D Object Detection Training")
     """
@@ -61,13 +63,20 @@ def train(cfg, model, device, checkpointer):
     scheduler = make_lr_scheduler(cfg, optimizer)
     checkpointer.init(model, optimizer, scheduler)
     start_iter = 0
-    if cfg.SOLVER.PRETRAIN_MODEL:
-        checkpointer.load_model()
-    if cfg.SOLVER.RESUME:
-        checkpointer.load_optimizer()
-        # If want to finetune and load saved scheduler prarms, please uncomment it.
-        checkpointer.load_scheduler()
-        start_iter = checkpointer.load_param('iteration')
+
+    fv_Checkpointer(model).load('pretrain/depth_pretrained_dla34-y1urdmir-20210422_165446-model_final-remapped.pth')
+    """
+    if cfg.SOLVER.PRETRAIN_MODEL and cfg.SOLVER.PRETRAIN_MODEL.startswith('pretrain'):
+        fv_Checkpointer(model).load(cfg.SOLVER.PRETRAIN_MODEL)
+    elif cfg.SOLVER.PRETRAIN_MODEL:
+        if cfg.SOLVER.PRETRAIN_MODEL:
+            checkpointer.load_model()
+        if cfg.SOLVER.RESUME:
+            checkpointer.load_optimizer()
+            # If want to finetune and load saved scheduler prarms, please uncomment it.
+            checkpointer.load_scheduler()
+            start_iter = checkpointer.load_param('iteration')
+    """
 
     data_loader = make_data_loader(cfg, is_train=True)
 

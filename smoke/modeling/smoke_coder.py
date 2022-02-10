@@ -215,7 +215,45 @@ class SMOKECoder():
             depth = target_depth * y_focal_ratio
         # [batch_size * max_points]
         return depth
-    
+
+    # depths_offset: [batch_size * max_points]
+    # K: [batch_size, 3, 3]
+    def decode_depth(self, depths_offset, K):
+        '''
+        Transform depth offset to depth
+        '''
+
+        # ### orginal
+        # 720.0
+        if self.normalized_focal_ref < 0:
+            depth = depths_offset * self.depth_ref[1] + self.depth_ref[0]
+        else:
+            # batch_size * max_points
+            N = depths_offset.shape[0]
+            # batch size
+            N_batch = K.shape[0]
+
+            device = depths_offset.device
+            # [batch_size, 9]
+            K = K.to(device=device).view(N_batch, -1)
+            # self.y_focal_ref : 720.0
+            # K:  [f/dx  0    u]
+            #     [0    f/dy  v]
+            #     [0     0    1]
+            # dy: the real-word length of each pixel
+            y_focal_ratio = K[:, 4] / self.y_focal_ref   #[batch_size] (1/dy)
+            # [batch * max_points]
+            # z length in pixel
+            y_focal_ratio = y_focal_ratio.unsqueeze(1).repeat(1, N // N_batch).view(-1)
+
+            #self.depth_ref : (28.01, 16.32)
+            #depth = (depths_offset * self.depth_ref[1] + self.depth_ref[0]) * y_focal_ratio
+            depth = depths_offset * y_focal_ratio
+        
+        # [batch_size * max_points]
+        return depth
+
+    """
     # depths_offset: [batch_size * max_points]
     # K: [batch_size, 3, 3]
     def decode_depth(self, depths_offset, K):
@@ -251,7 +289,7 @@ class SMOKECoder():
         
         # [batch_size * max_points]
         return depth
-
+    """
     # directly infer the depth
     def decode_depth_std(self, depths_offset, K):
         '''

@@ -216,6 +216,7 @@ class SMOKEPredictor(nn.Module):
 
 
     def forward(self, features):
+        features = features['p3']
         head_class = self.class_head(features)
         #print(head_class.shape)
         if not self.reg_multi_heads:
